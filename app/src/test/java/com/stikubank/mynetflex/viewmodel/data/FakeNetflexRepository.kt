@@ -145,10 +145,6 @@ class FakeNetflexRepository constructor(private val remoteDataSource: RemoteData
             }
         }.asLiveData()
 
-//    override fun getMovieById(NMvID: String): LiveData<NetflexData> = localDataSource.getMovieById(NMvID)
-//
-//    override fun getTvShowById(NTvID: String): LiveData<NetflexData> = localDataSource.getTvShowById(NTvID)
-
     override fun setMovieFav(movie: NetflexData, state: Boolean) =
         appExecutors.diskIO().execute { localDataSource.setMovieFav(movie, state) }
 

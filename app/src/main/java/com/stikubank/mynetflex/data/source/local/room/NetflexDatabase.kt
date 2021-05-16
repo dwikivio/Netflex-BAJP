@@ -13,18 +13,4 @@ abstract class NetflexDatabase : RoomDatabase(){
 
     abstract fun netflexDao(): NetflexDao
 
-//    companion object{
-//        @Volatile
-//        private var INSTANCE: NetflexDatabase? = null
-//
-//        fun getInstance(context: Context): NetflexDatabase = INSTANCE ?: synchronized(this){
-//            Room.databaseBuilder(
-//                context.applicationContext,
-//                NetflexDatabase::class.java,
-//                "Netflex.db"
-//            ).build().apply {
-//                INSTANCE = this
-//            }
-//        }
-//    }
 }

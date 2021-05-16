@@ -29,32 +29,9 @@ class FavMoviesFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(fragmentFavMoviesBinding.rvMovies)
         if(activity != null){
 
-//            vModel.getMovies().observe(this, { movies ->
-//                if(movies != null ){
-//                    when(movies.status){
-//                        Status.LOADING -> fragmentFavMoviesBinding?.progressBar?.visibility = View.VISIBLE
-//                        Status.SUCCESS -> {
-//                            fragmentFavMoviesBinding?.progressBar?.visibility = View.GONE
-//                            movieAdapter.setMovies(movies.data)
-//                            movieAdapter.notifyDataSetChanged()
-//                        }
-//                        Status.ERROR -> {
-//                            fragmentFavMoviesBinding?.progressBar?.visibility = View.GONE
-//                            Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            })
-//
-//            with(fragmentMoviesBinding?.rvMovies){
-//                this?.layoutManager = LinearLayoutManager(context)
-//                this?.setHasFixedSize(true)
-//                this?.adapter = movieAdapter
-//            }
             fragmentFavMoviesBinding.progressBar.visibility = View.VISIBLE
             vModel.getFavMovies().observe(this, {
                 fragmentFavMoviesBinding.progressBar.visibility = View.GONE
-//                favMovieAdapter.setFavMovies(movies)
                 favMovieAdapter.submitList(it)
                 favMovieAdapter.notifyDataSetChanged()
             })
@@ -67,11 +44,7 @@ class FavMoviesFragment : Fragment() {
 
         }
     }
-//
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        fragmentFavMoviesBinding = null
-//    }
+
     private val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int =
             makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)

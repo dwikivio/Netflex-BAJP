@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stikubank.mynetflex.R
 import com.stikubank.mynetflex.adapter.ShowAdapter
 import com.stikubank.mynetflex.databinding.FragmentShowsBinding
 import com.stikubank.mynetflex.viewmodel.ShowsViewModel
-import com.stikubank.mynetflex.viewmodel.ViewModelFactory
 import com.stikubank.mynetflex.vo.Status
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -29,10 +27,6 @@ class ShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if(activity != null){
-
-//            val factory = ViewModelFactory.getInstance(requireActivity())
-//            val vModel = ViewModelProvider(this, factory)[ShowsViewModel::class.java]
-
             val showsAdapter = ShowAdapter()
 
             vModel.getShows().observe(this, { shows ->
@@ -41,7 +35,6 @@ class ShowsFragment : Fragment() {
                         Status.LOADING -> showsFragmentBinding?.progressBar?.visibility = View.VISIBLE
                         Status.SUCCESS -> {
                             showsFragmentBinding?.progressBar?.visibility = View.GONE
-//                            showsAdapter.setShows(shows.data)
                             showsAdapter.submitList(shows.data)
                             showsAdapter.notifyDataSetChanged()
                         }
@@ -58,19 +51,6 @@ class ShowsFragment : Fragment() {
                 this?.setHasFixedSize(true)
                 this?.adapter = showsAdapter
             }
-
-//            showsFragmentBinding.progressBar.visibility = View.VISIBLE
-//            vModel.getShows().observe(this, { shows ->
-//                showsFragmentBinding.progressBar.visibility = View.GONE
-//                showsAdapter.setShows(shows)
-//                showsAdapter.notifyDataSetChanged()
-//            })
-//
-//            with(showsFragmentBinding.rvShows){
-//                layoutManager = LinearLayoutManager(context)
-//                setHasFixedSize(true)
-//                 adapter = showsAdapter
-//            }
         }
     }
 
@@ -90,4 +70,5 @@ class ShowsFragment : Fragment() {
         super.onDestroy()
         showsFragmentBinding = null
     }
+
 }

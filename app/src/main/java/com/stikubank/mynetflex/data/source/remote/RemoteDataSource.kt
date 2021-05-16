@@ -14,17 +14,7 @@ class RemoteDataSource (private val jsonHelper: JsonHelper) {
     private val handler = Handler(Looper.getMainLooper())
 
     companion object {
-
         private const val loadLatency: Long = 1000
-
-        @Volatile
-        private var instance: RemoteDataSource? = null
-
-        fun getInstance(helper: JsonHelper): RemoteDataSource = instance ?: synchronized(this) {
-                instance ?: RemoteDataSource(helper).apply {
-                    instance = this
-                }
-            }
     }
 
     fun getAllMovies(): LiveData<ApiResponse<List<MovieResponse>>>{
@@ -32,7 +22,6 @@ class RemoteDataSource (private val jsonHelper: JsonHelper) {
         val resultMovie = MutableLiveData<ApiResponse<List<MovieResponse>>>()
         handler.postDelayed({
             resultMovie.value = ApiResponse.success(jsonHelper.loadMovies())
-//            callback.onAllMovieReceived(jsonHelper.loadMovies())
             EspressoIdlingResource.decrement()
         }, loadLatency)
         return resultMovie
@@ -43,18 +32,9 @@ class RemoteDataSource (private val jsonHelper: JsonHelper) {
         val resultShow = MutableLiveData<ApiResponse<List<TvshowResponse>>>()
         handler.postDelayed({
             resultShow.value = ApiResponse.success(jsonHelper.loadShows())
-//            callback.onAllTvshowsReceived(jsonHelper.loadShows())
             EspressoIdlingResource.decrement()
         }, loadLatency)
         return resultShow
     }
-
-//    interface movieCallback {
-//        fun onAllMovieReceived(movieResponse: List<MovieResponse>)
-//    }
-//
-//    interface showCallback {
-//        fun onAllTvshowsReceived(tvShowResponse: List<TvshowResponse>)
-//    }
 
 }

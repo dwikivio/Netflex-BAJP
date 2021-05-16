@@ -10,25 +10,6 @@ import com.stikubank.mynetflex.vo.Resource
 
 class DetailViewModel(private val netRepository: NetflexRepository): ViewModel() {
 
-//    val detailId = MutableLiveData<String>()
-//
-//    fun setSelectedItem(detailId: String){
-//        this.detailId.value = detailId
-//    }
-//
-//
-//
-//    fun getDetailMovie(NMvId: String): LiveData<NetflexData> = netRepository.getMovieById(NMvId)
-//    fun getDetailShow(NTvId: String): LiveData<NetflexData> = netRepository.getTvShowById(NTvId)
-//
-//    fun setMovieFav(movie: NetflexData){
-//        netRepository.setMovieFav(movie)
-//    }
-//
-//    fun setShowFav(show: NetflexData){
-//
-//    }
-
     private var nmvId = MutableLiveData<String>()
     private var ntvId = MutableLiveData<String>()
 

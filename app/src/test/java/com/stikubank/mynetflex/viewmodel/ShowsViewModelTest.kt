@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import com.stikubank.mynetflex.data.NetflexRepository
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
-import com.stikubank.mynetflex.utils.DataDummy
 import com.stikubank.mynetflex.vo.Resource
 import org.junit.Test
 

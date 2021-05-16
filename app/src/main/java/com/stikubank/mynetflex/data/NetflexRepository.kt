@@ -18,24 +18,6 @@ class NetflexRepository(
     private val appExecutors: AppExecutors
 ) : NetflexDataSource {
 
-    companion object {
-        @Volatile
-        private var instance: NetflexRepository? = null
-
-        fun getInstance(
-            remoteData: RemoteDataSource,
-            localData: LocalDataSource,
-            appExecutors: AppExecutors
-        ): NetflexRepository =
-            instance ?: synchronized(this) {
-                instance ?: NetflexRepository(
-                    remoteData,
-                    localData,
-                    appExecutors
-                ).apply { instance = this }
-            }
-    }
-
     override fun getAllMovies(): LiveData<Resource<PagedList<NetflexData>>> {
 
         return object :
@@ -161,10 +143,6 @@ class NetflexRepository(
                 localDataSource.insertData(showList)
             }
         }.asLiveData()
-
-//    override fun getMovieById(NMvID: String): LiveData<NetflexData> = localDataSource.getMovieById(NMvID)
-//
-//    override fun getTvShowById(NTvID: String): LiveData<NetflexData> = localDataSource.getTvShowById(NTvID)
 
     override fun setMovieFav(movie: NetflexData, state: Boolean) =
         appExecutors.diskIO().execute { localDataSource.setMovieFav(movie, state) }

@@ -7,12 +7,6 @@ import com.stikubank.mynetflex.data.source.local.room.NetflexDao
 
 class LocalDataSource(private val mNetflexDao: NetflexDao) {
 
-    companion object{
-        private var INSTANCE: LocalDataSource? = null
-
-        fun getInstance(netflexDao: NetflexDao): LocalDataSource = INSTANCE ?: getInstance(netflexDao)
-        }
-
     fun getAllMovies(): DataSource.Factory<Int, NetflexData> = mNetflexDao.getMovies()
 
     fun getAllTvShows(): DataSource.Factory<Int, NetflexData> = mNetflexDao.getShows()
@@ -22,8 +16,6 @@ class LocalDataSource(private val mNetflexDao: NetflexDao) {
     fun getTvShowById(NTvID: String) : LiveData<NetflexData> = mNetflexDao.getDetailData(NTvID)
 
     fun insertData(data: List<NetflexData>) = mNetflexDao.insertData(data)
-
-    fun updateData(data: NetflexData) = mNetflexDao.updateData(data)
 
     fun setMovieFav(movie: NetflexData, newState: Boolean){
         movie.isFavorite = newState

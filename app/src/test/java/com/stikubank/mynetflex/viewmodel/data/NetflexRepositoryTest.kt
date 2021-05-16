@@ -2,22 +2,18 @@ package com.stikubank.mynetflex.viewmodel.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.DataSource
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.verify
 import com.stikubank.mynetflex.data.source.local.LocalDataSource
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
 import com.stikubank.mynetflex.data.source.remote.RemoteDataSource
 import com.stikubank.mynetflex.utils.AppExecutors
 import com.stikubank.mynetflex.utils.DataDummy
-import com.stikubank.mynetflex.viewmodel.utils.LiveDataTestUtil
 import com.stikubank.mynetflex.viewmodel.utils.PagedListUtil
 import com.stikubank.mynetflex.vo.Resource
 import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Rule
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -47,6 +43,7 @@ class NetflexRepositoryTest {
         assertEquals(movieResponse.size.toLong(), movEntity.data?.size?.toLong())
     }
 
+    @Test
     fun getFavMovies(){
         val dataSourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, NetflexData>
         `when`(local.getFavMovies()).thenReturn(dataSourceFactory)
@@ -70,6 +67,7 @@ class NetflexRepositoryTest {
         assertEquals(showResponse.size.toLong(), showEntity.data?.size?.toLong())
     }
 
+    @Test
     fun getFavShows(){
         val dataSourceFactory = mock(DataSource.Factory::class.java) as DataSource.Factory<Int, NetflexData>
         `when`(local.getFavShows()).thenReturn(dataSourceFactory)

@@ -16,19 +16,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-//object Injection {
-//    fun provideRepository(context: Context): NetflexRepository {
-//
-////        val database = NetflexDatabase.getInstance(context)
-//
-//        val remoteDataSource = RemoteDataSource.getInstance(JsonHelper(context))
-//        val localDataSource = LocalDataSource.getInstance(database.netflexDao())
-//        val appExecutors = AppExecutors()
-//
-//        return NetflexRepository.getInstance(remoteDataSource, localDataSource, appExecutors)
-//    }
-//}
-
 val jsonHelperModule = module {
     factory { JsonHelper(get()) }
 }

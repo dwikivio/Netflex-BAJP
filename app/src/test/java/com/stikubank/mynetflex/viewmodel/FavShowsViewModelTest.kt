@@ -13,14 +13,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class FavMoviesViewModelTest {
+class FavShowsViewModelTest {
 
-    private lateinit var viewModel: FavMoviesViewModel
+    private lateinit var viewModel: FavShowsViewModel
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -36,23 +35,23 @@ class FavMoviesViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FavMoviesViewModel(netflexRepository)
+        viewModel = FavShowsViewModel(netflexRepository)
     }
 
     @Test
-    fun getFavMovies() {
-        val dummyMovies = pagedList
-        `when`(dummyMovies.size).thenReturn(5)
-        val movies = MutableLiveData<PagedList<NetflexData>>()
-        movies.value = dummyMovies
+    fun getFavShows() {
+        val dummyShows = pagedList
+        Mockito.`when`(dummyShows.size).thenReturn(5)
+        val shows = MutableLiveData<PagedList<NetflexData>>()
+        shows.value = dummyShows
 
-        `when`(netflexRepository.getFavMovies()).thenReturn(movies)
-        val netData = viewModel.getFavMovies().value
-        verify(netflexRepository).getFavMovies()
+        Mockito.`when`(netflexRepository.getFavShows()).thenReturn(shows)
+        val netData = viewModel.getFavShows().value
+        Mockito.verify(netflexRepository).getFavShows()
         assertNotNull(netData)
         assertEquals(5, netData?.size)
 
-        viewModel.getFavMovies().observeForever(observer)
-        verify(observer).onChanged(dummyMovies)
+        viewModel.getFavShows().observeForever(observer)
+        Mockito.verify(observer).onChanged(dummyShows)
     }
 }

@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.stikubank.mynetflex.R
 import com.stikubank.mynetflex.adapter.MovieAdapter
 import com.stikubank.mynetflex.databinding.FragmentMoviesBinding
 import com.stikubank.mynetflex.viewmodel.MoviesViewModel
-import com.stikubank.mynetflex.viewmodel.ViewModelFactory
 import com.stikubank.mynetflex.vo.Status
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -28,9 +26,6 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if(activity != null){
-
-//            val factory = ViewModelFactory.getInstance(requireActivity())
-//            val vModel = ViewModelProvider(this, factory)[MoviesViewModel::class.java]
             val vModel: MoviesViewModel by viewModel()
             val movieAdapter = MovieAdapter()
 
@@ -40,7 +35,6 @@ class MoviesFragment : Fragment() {
                         Status.LOADING -> fragmentMoviesBinding?.progressBar?.visibility = View.VISIBLE
                         Status.SUCCESS -> {
                             fragmentMoviesBinding?.progressBar?.visibility = View.GONE
-//                            movieAdapter.setMovies(movies.data)
                             movieAdapter.submitList(movies.data)
                             movieAdapter.notifyDataSetChanged()
                         }
@@ -57,19 +51,6 @@ class MoviesFragment : Fragment() {
                 this?.setHasFixedSize(true)
                 this?.adapter = movieAdapter
             }
-
-//            fragmentMoviesBinding.progressBar.visibility = View.VISIBLE
-//            vModel.getMovies().observe(this, { movies ->
-//                fragmentMoviesBinding.progressBar.visibility = View.GONE
-//                movieAdapter.setMovies(movies)
-//                movieAdapter.notifyDataSetChanged()
-//            })
-//
-//            with(fragmentMoviesBinding.rvMovies){
-//                layoutManager = LinearLayoutManager(context)
-//                setHasFixedSize(true)
-//                adapter = movieAdapter
-//            }
         }
     }
 

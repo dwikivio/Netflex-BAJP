@@ -79,16 +79,6 @@ class DetailsActivity : AppCompatActivity() {
             }
 
         }
-
-//
-//            mvID?.let{
-//                populateMovieDetail(mvID)
-//            }
-//
-//            tvID?.let {
-//                populateTvDetail(tvID)
-//            }
-
     }
 
     private fun populateDetail(netflex: NetflexData) {
@@ -117,17 +107,5 @@ class DetailsActivity : AppCompatActivity() {
             setFavorite(status)
             viewModel.setFavorite()
         }
-
-//        progress_bar.visibility = View.VISIBLE
-//        viewModel.setSelectedMovie(mvId)
-//        viewModel.movie.observe(this,{
-//            when(it.status){
-//                Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
-//                Status.SUCCESS -> if(it.data != null){
-//                    progress_bar.visibility = View.GONE
-//
-//                }
-//            }
-//        })
     }
 }
