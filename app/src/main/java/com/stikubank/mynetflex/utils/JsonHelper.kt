@@ -32,11 +32,12 @@ class JsonHelper(private val context: Context) {
                 val movie = listArray.getJSONObject(i)
 
                 val nmvid = movie.getString("NMvID")
+                val type = movie.getString("type")
                 val title = movie.getString("title")
                 val synop = movie.getString("synopsis")
                 val poster = movie.getString("poster")
 
-                val movieResponse = MovieResponse(nmvid, title, synop, poster)
+                val movieResponse = MovieResponse(nmvid, type, title, synop, poster)
                 list.add(movieResponse)
 
                 println(list)
@@ -57,11 +58,12 @@ class JsonHelper(private val context: Context) {
                 val movie = listArray.getJSONObject(i)
 
                 val ntvid = movie.getString("NTvID")
+                val type = movie.getString("type")
                 val title = movie.getString("title")
                 val synop = movie.getString("synopsis")
                 val poster = movie.getString("poster")
 
-                val showResponse = TvshowResponse(ntvid, title, synop, poster)
+                val showResponse = TvshowResponse(ntvid, type, title, synop, poster)
                 list.add(showResponse)
 
                 println(list)

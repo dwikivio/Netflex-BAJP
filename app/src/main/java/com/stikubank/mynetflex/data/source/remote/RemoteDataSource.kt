@@ -2,6 +2,8 @@ package com.stikubank.mynetflex.data.source.remote
 
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.stikubank.mynetflex.data.source.remote.response.MovieResponse
 import com.stikubank.mynetflex.data.source.remote.response.TvshowResponse
 import com.stikubank.mynetflex.utils.EspressoIdlingResource
@@ -25,28 +27,34 @@ class RemoteDataSource (private val jsonHelper: JsonHelper) {
             }
     }
 
-    fun getAllMovies(callback: movieCallback){
+    fun getAllMovies(): LiveData<ApiResponse<List<MovieResponse>>>{
         EspressoIdlingResource.increment()
+        val resultMovie = MutableLiveData<ApiResponse<List<MovieResponse>>>()
         handler.postDelayed({
-            callback.onAllMovieReceived(jsonHelper.loadMovies())
+            resultMovie.value = ApiResponse.success(jsonHelper.loadMovies())
+//            callback.onAllMovieReceived(jsonHelper.loadMovies())
             EspressoIdlingResource.decrement()
         }, loadLatency)
+        return resultMovie
     }
 
-    fun getAllShows(callback: showCallback){
+    fun getAllShows(): LiveData<ApiResponse<List<TvshowResponse>>>{
         EspressoIdlingResource.increment()
+        val resultShow = MutableLiveData<ApiResponse<List<TvshowResponse>>>()
         handler.postDelayed({
-            callback.onAllTvshowsReceived(jsonHelper.loadShows())
+            resultShow.value = ApiResponse.success(jsonHelper.loadShows())
+//            callback.onAllTvshowsReceived(jsonHelper.loadShows())
             EspressoIdlingResource.decrement()
         }, loadLatency)
+        return resultShow
     }
 
-    interface movieCallback {
-        fun onAllMovieReceived(movieResponse: List<MovieResponse>)
-    }
-
-    interface showCallback {
-        fun onAllTvshowsReceived(tvShowResponse: List<TvshowResponse>)
-    }
+//    interface movieCallback {
+//        fun onAllMovieReceived(movieResponse: List<MovieResponse>)
+//    }
+//
+//    interface showCallback {
+//        fun onAllTvshowsReceived(tvShowResponse: List<TvshowResponse>)
+//    }
 
 }

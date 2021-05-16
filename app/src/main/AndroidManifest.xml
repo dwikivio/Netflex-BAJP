@@ -5,15 +5,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".utils.KoinApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="NETFLEX"
         android:parentActivityName=".ui.MainActivity"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".utils.KoinApp"
         android:theme="@style/Theme.MyNetflex">
-        <activity android:name=".ui.DetailsActivity"></activity>
+        <activity android:name=".ui.FavoriteActivity"></activity>
+        <activity android:name=".ui.DetailsActivity" />
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"

@@ -3,9 +3,11 @@ package com.stikubank.mynetflex.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.stikubank.mynetflex.data.source.NetflexRepository
+import androidx.paging.PagedList
+import com.stikubank.mynetflex.data.NetflexRepository
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
 import com.stikubank.mynetflex.utils.DataDummy
+import com.stikubank.mynetflex.vo.Resource
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -29,7 +31,10 @@ class ShowsViewModelTest {
     private lateinit var netflexRepository: NetflexRepository
 
     @Mock
-    private lateinit var observer: Observer<List<NetflexData>>
+    private lateinit var observer: Observer<Resource<PagedList<NetflexData>>>
+
+    @Mock
+    private lateinit var pagedList: PagedList<NetflexData>
 
     @Before
     fun setUp(){
@@ -38,12 +43,13 @@ class ShowsViewModelTest {
 
     @Test
     fun getShows() {
-        val dummyShows = DataDummy.generateTvShows()
-        val shows = MutableLiveData<List<NetflexData>>()
+        val dummyShows = Resource.success(pagedList)
+        `when`(dummyShows.data?.size).thenReturn(10)
+        val shows = MutableLiveData<Resource<PagedList<NetflexData>>>()
         shows.value = dummyShows
 
         `when`(netflexRepository.getAllTvShows()).thenReturn(shows)
-        val netData = viewModel.getShows().value
+        val netData = viewModel.getShows().value?.data
         verify(netflexRepository).getAllTvShows()
         assertNotNull(netData)
         assertEquals(10,netData?.size)

@@ -1,6 +1,7 @@
 package com.stikubank.mynetflex.utils
 
 import android.app.Application
+import com.stikubank.mynetflex.di.databaseModule
 import com.stikubank.mynetflex.di.jsonHelperModule
 import com.stikubank.mynetflex.di.repositoryModule
 import com.stikubank.mynetflex.di.viewModelModule
@@ -19,7 +20,8 @@ class KoinApp: Application() {
                     listOf(
                             jsonHelperModule,
                             repositoryModule,
-                            viewModelModule
+                            viewModelModule,
+                            databaseModule
                     )
             )
         }

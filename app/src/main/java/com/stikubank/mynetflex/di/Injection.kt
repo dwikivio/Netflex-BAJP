@@ -1,23 +1,33 @@
 package com.stikubank.mynetflex.di
 
-import android.content.Context
-import com.stikubank.mynetflex.data.source.NetflexRepository
+import androidx.room.Room
+import com.stikubank.mynetflex.data.NetflexRepository
+import com.stikubank.mynetflex.data.source.local.LocalDataSource
+import com.stikubank.mynetflex.data.source.local.room.NetflexDatabase
 import com.stikubank.mynetflex.data.source.remote.RemoteDataSource
+import com.stikubank.mynetflex.viewmodel.FavMoviesViewModel
+import com.stikubank.mynetflex.viewmodel.FavShowsViewModel
+import com.stikubank.mynetflex.utils.AppExecutors
 import com.stikubank.mynetflex.utils.JsonHelper
 import com.stikubank.mynetflex.viewmodel.DetailViewModel
 import com.stikubank.mynetflex.viewmodel.MoviesViewModel
 import com.stikubank.mynetflex.viewmodel.ShowsViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-object Injection {
-    fun provideRepository(context: Context): NetflexRepository {
-
-        val remoteDataSource = RemoteDataSource.getInstance(JsonHelper(context))
-
-        return NetflexRepository.getInstance(remoteDataSource)
-    }
-}
+//object Injection {
+//    fun provideRepository(context: Context): NetflexRepository {
+//
+////        val database = NetflexDatabase.getInstance(context)
+//
+//        val remoteDataSource = RemoteDataSource.getInstance(JsonHelper(context))
+//        val localDataSource = LocalDataSource.getInstance(database.netflexDao())
+//        val appExecutors = AppExecutors()
+//
+//        return NetflexRepository.getInstance(remoteDataSource, localDataSource, appExecutors)
+//    }
+//}
 
 val jsonHelperModule = module {
     factory { JsonHelper(get()) }
@@ -25,11 +35,28 @@ val jsonHelperModule = module {
 
 val repositoryModule = module {
     single { RemoteDataSource(get()) }
-    single { NetflexRepository(get()) }
+    single { LocalDataSource(get()) }
+    factory { AppExecutors() }
+    single { NetflexRepository(get(), get(), get()) }
 }
 
 val viewModelModule = module {
     viewModel { MoviesViewModel(get()) }
     viewModel { ShowsViewModel(get()) }
     viewModel { DetailViewModel(get()) }
+    viewModel { FavMoviesViewModel (get()) }
+    viewModel { FavShowsViewModel (get()) }
+}
+
+val databaseModule = module {
+    factory { get<NetflexDatabase>().netflexDao() }
+
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            NetflexDatabase::class.java,
+            "Netflex.db"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
 }

@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class MovieResponse(
     var NetflexId: String,
+    var type: String,
     var title: String,
     var synopsis: String,
     var poster: String,

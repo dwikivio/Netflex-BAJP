@@ -1,24 +1,22 @@
 package com.stikubank.mynetflex.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.stikubank.mynetflex.data.source.NetflexRepository
-import com.stikubank.mynetflex.di.Injection
+import com.stikubank.mynetflex.data.NetflexRepository
 
 class ViewModelFactory private constructor(private val mNetflexRepository: NetflexRepository) : ViewModelProvider.NewInstanceFactory() {
 
-    companion object {
-        @Volatile
-        private var instance: ViewModelFactory? = null
-
-        fun getInstance(context: Context): ViewModelFactory =
-            instance ?: synchronized(this) {
-                instance ?: ViewModelFactory(Injection.provideRepository(context)).apply {
-                    instance = this
-                }
-            }
-    }
+//    companion object {
+//        @Volatile
+//        private var instance: ViewModelFactory? = null
+//
+//        fun getInstance(context: Context): ViewModelFactory =
+//            instance ?: synchronized(this) {
+//                instance ?: ViewModelFactory(Injection.provideRepository(context)).apply {
+//                    instance = this
+//                }
+//            }
+//    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

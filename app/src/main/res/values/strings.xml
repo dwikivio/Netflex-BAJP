@@ -6,4 +6,9 @@
     <string name="synopsis">Ini tempat sinopsis film</string>
     <string name="shows">TV SHOWS</string>
     <string name="movies">MOVIES</string>
+    <string name="menu_fav">Favorite</string>
+    <string name="menu_favorite">Favorite</string>
+    <string name="titlefav">FAVORITE LIST</string>
+    <string name="message_undo">Urungkan Aksi?</string>
+    <string name="message_ok">Urungkan</string>
 </resources>

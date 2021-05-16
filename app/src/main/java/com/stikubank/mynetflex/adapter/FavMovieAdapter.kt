@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
-import com.stikubank.mynetflex.databinding.ItemsShowBinding
+import com.stikubank.mynetflex.databinding.ItemsMovieBinding
 import com.stikubank.mynetflex.ui.DetailsActivity
 
-class ShowAdapter: PagedListAdapter<NetflexData, ShowAdapter.ShowViewHolder>(DIFF_CALLBACK) {
+class FavMovieAdapter: PagedListAdapter<NetflexData, FavMovieAdapter.FavMovieViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NetflexData>() {
@@ -24,28 +24,33 @@ class ShowAdapter: PagedListAdapter<NetflexData, ShowAdapter.ShowViewHolder>(DIF
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowAdapter.ShowViewHolder {
-       val itemsShowBinding = ItemsShowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ShowViewHolder(itemsShowBinding)
+    fun getSwipedData(swipedPosition: Int): NetflexData? = getItem(swipedPosition)
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FavMovieAdapter.FavMovieViewHolder {
+        val itemsMoviesBinding = ItemsMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FavMovieViewHolder(itemsMoviesBinding)
     }
 
-    override fun onBindViewHolder(holder: ShowAdapter.ShowViewHolder, position: Int) {
-        val show = getItem(position)
-        if (show != null) {
-            holder.bind(show)
+    override fun onBindViewHolder(holder: FavMovieViewHolder, position: Int) {
+        val movie = getItem(position)
+        if (movie != null) {
+            holder.bind(movie)
         }
     }
 
-    inner class ShowViewHolder(private val binding: ItemsShowBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(show: NetflexData){
+    inner class FavMovieViewHolder(private val binding: ItemsMovieBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(movie: NetflexData){
             with(binding){
-                tvItem.text = show.title
+                tvItem.text = movie.title
                 Glide.with(itemView.context)
-                    .load(show.poster)
+                    .load(movie.poster)
                     .into(ivPoster)
                 itemView.setOnClickListener {
                     val intent = Intent(itemView.context, DetailsActivity::class.java)
-                    intent.putExtra(DetailsActivity.SHOWS, show.NetflexId)
+                    intent.putExtra(DetailsActivity.MOVIE, movie.NetflexId)
                     itemView.context.startActivity(intent)
                 }
             }

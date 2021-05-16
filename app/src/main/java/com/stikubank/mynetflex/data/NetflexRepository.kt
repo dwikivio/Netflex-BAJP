@@ -1,10 +1,8 @@
-package com.stikubank.mynetflex.viewmodel.data
+package com.stikubank.mynetflex.data
 
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.stikubank.mynetflex.data.NetflexDataSource
-import com.stikubank.mynetflex.data.NetworkBoundResource
 import com.stikubank.mynetflex.data.source.local.LocalDataSource
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
 import com.stikubank.mynetflex.data.source.remote.ApiResponse
@@ -14,16 +12,35 @@ import com.stikubank.mynetflex.data.source.remote.response.TvshowResponse
 import com.stikubank.mynetflex.utils.AppExecutors
 import com.stikubank.mynetflex.vo.Resource
 
-class FakeNetflexRepository constructor(private val remoteDataSource: RemoteDataSource,
-                                        private val localDataSource: LocalDataSource,
-                                        private val appExecutors: AppExecutors
+class NetflexRepository(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
+    private val appExecutors: AppExecutors
 ) : NetflexDataSource {
+
+    companion object {
+        @Volatile
+        private var instance: NetflexRepository? = null
+
+        fun getInstance(
+            remoteData: RemoteDataSource,
+            localData: LocalDataSource,
+            appExecutors: AppExecutors
+        ): NetflexRepository =
+            instance ?: synchronized(this) {
+                instance ?: NetflexRepository(
+                    remoteData,
+                    localData,
+                    appExecutors
+                ).apply { instance = this }
+            }
+    }
 
     override fun getAllMovies(): LiveData<Resource<PagedList<NetflexData>>> {
 
-        return object : NetworkBoundResource<PagedList<NetflexData>, List<MovieResponse>>(appExecutors) {
+        return object :
+            NetworkBoundResource<PagedList<NetflexData>, List<MovieResponse>>(appExecutors) {
             public override fun loadFromDB(): LiveData<PagedList<NetflexData>> {
-
                 val config = PagedList.Config.Builder()
                     .setEnablePlaceholders(false)
                     .setInitialLoadSizeHint(4)
@@ -31,16 +48,16 @@ class FakeNetflexRepository constructor(private val remoteDataSource: RemoteData
                     .build()
                 return LivePagedListBuilder(localDataSource.getAllMovies(), config).build()
             }
-            override fun shouldFetch(data: PagedList<NetflexData>?): Boolean {
-                return data == null || data.isEmpty()
-            }
-            public override fun createCall(): LiveData<ApiResponse<List<MovieResponse>>> {
-                return remoteDataSource.getAllMovies()
-            }
+
+            override fun shouldFetch(data: PagedList<NetflexData>?): Boolean =
+                data == null || data.isEmpty()
+
+            public override fun createCall(): LiveData<ApiResponse<List<MovieResponse>>> =
+                remoteDataSource.getAllMovies()
 
             override fun saveCallResult(data: List<MovieResponse>) {
                 val movList = ArrayList<NetflexData>()
-                for(response in data){
+                for (response in data) {
                     val mov = NetflexData(
                         response.NetflexId,
                         response.type,

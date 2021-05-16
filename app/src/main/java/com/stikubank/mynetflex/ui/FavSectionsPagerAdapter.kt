@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.stikubank.mynetflex.R
 
-class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager): FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class FavSectionsPagerAdapter(private val mContext: Context, fm: FragmentManager): FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     companion object{
         @StringRes
@@ -15,11 +15,11 @@ class SectionsPagerAdapter(private val mContext: Context, fm: FragmentManager): 
     }
 
     override fun getItem(position: Int): Fragment =
-            when(position){
-                0 -> MoviesFragment()
-                1 -> ShowsFragment()
-                else -> Fragment()
-            }
+        when(position){
+            0 -> FavMoviesFragment()
+            1 -> FavShowsFragment()
+            else -> Fragment()
+        }
 
     override fun getPageTitle(position: Int): CharSequence? = mContext.resources.getString(TAB_HALAMAN[position])
 

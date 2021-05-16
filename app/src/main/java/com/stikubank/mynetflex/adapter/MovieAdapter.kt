@@ -3,21 +3,26 @@ package com.stikubank.mynetflex.adapter
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedList
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
 import com.stikubank.mynetflex.databinding.ItemsMovieBinding
 import com.stikubank.mynetflex.ui.DetailsActivity
 
-class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MovieAdapter: PagedListAdapter<NetflexData, MovieAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
-    private val listMovies = ArrayList<NetflexData>()
-
-    fun setMovies(movies: List<NetflexData>?){
-        if(movies == null)
-            return
-        this.listMovies.clear()
-        this.listMovies.addAll(movies)
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NetflexData>() {
+            override fun areItemsTheSame(oldItem: NetflexData, newItem: NetflexData): Boolean {
+                return oldItem.NetflexId == newItem.NetflexId
+            }
+            override fun areContentsTheSame(oldItem: NetflexData, newItem: NetflexData): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdapter.MovieViewHolder {
@@ -26,11 +31,13 @@ class MovieAdapter: RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MovieAdapter.MovieViewHolder, position: Int) {
-        val movie = listMovies[position]
-        holder.bind(movie)
+        val movie = getItem(position)
+        if (movie != null) {
+            holder.bind(movie)
+        }
     }
 
-    override fun getItemCount(): Int = listMovies.size
+//    override fun getItemCount(): Int = listMovies.size
 
     inner class MovieViewHolder(private val binding: ItemsMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: NetflexData){

@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.stikubank.mynetflex.data.source.local.entity.NetflexData
-import com.stikubank.mynetflex.databinding.ItemsShowBinding
+import com.stikubank.mynetflex.databinding.ItemsMovieBinding
 import com.stikubank.mynetflex.ui.DetailsActivity
 
-class ShowAdapter: PagedListAdapter<NetflexData, ShowAdapter.ShowViewHolder>(DIFF_CALLBACK) {
+class FavShowAdapter: PagedListAdapter<NetflexData, FavShowAdapter.FavShowViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NetflexData>() {
@@ -24,19 +24,24 @@ class ShowAdapter: PagedListAdapter<NetflexData, ShowAdapter.ShowViewHolder>(DIF
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowAdapter.ShowViewHolder {
-       val itemsShowBinding = ItemsShowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ShowViewHolder(itemsShowBinding)
+    fun getSwipedData(swipedPosition: Int): NetflexData? = getItem(swipedPosition)
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FavShowAdapter.FavShowViewHolder {
+        val itemsMoviesBinding = ItemsMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FavShowViewHolder(itemsMoviesBinding)
     }
 
-    override fun onBindViewHolder(holder: ShowAdapter.ShowViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavShowViewHolder, position: Int) {
         val show = getItem(position)
         if (show != null) {
             holder.bind(show)
         }
     }
 
-    inner class ShowViewHolder(private val binding: ItemsShowBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class FavShowViewHolder(private val binding: ItemsMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(show: NetflexData){
             with(binding){
                 tvItem.text = show.title
@@ -51,5 +56,4 @@ class ShowAdapter: PagedListAdapter<NetflexData, ShowAdapter.ShowViewHolder>(DIF
             }
         }
     }
-
 }

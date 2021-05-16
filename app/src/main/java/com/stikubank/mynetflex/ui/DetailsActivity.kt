@@ -2,61 +2,132 @@ package com.stikubank.mynetflex.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.stikubank.mynetflex.R
+import com.stikubank.mynetflex.data.source.local.entity.NetflexData
+import com.stikubank.mynetflex.databinding.ActivityDetailsBinding
 import com.stikubank.mynetflex.viewmodel.DetailViewModel
-import kotlinx.android.synthetic.main.activity_details.*
+import com.stikubank.mynetflex.vo.Status
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailsActivity : AppCompatActivity() {
 
     private val viewModel: DetailViewModel by viewModel()
+    private lateinit var activityDetailsBinding: ActivityDetailsBinding
 
-    companion object{
+    companion object {
         const val MOVIE = "NMvID"
         const val SHOWS = "NTvID"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_details)
+        activityDetailsBinding = ActivityDetailsBinding.inflate(layoutInflater)
+        setContentView(activityDetailsBinding.root)
 
-            val mvID = intent.getStringExtra(MOVIE)
-            val tvID = intent.getStringExtra(SHOWS)
-            mvID?.let{
-                populateMovieDetail(mvID)
+        val extra = intent.extras
+        val mvID = intent.getStringExtra(MOVIE)
+        val tvID = intent.getStringExtra(SHOWS)
+
+        if (extra != null) {
+            if (mvID != null) {
+                viewModel.setSelectedMovie(mvID)
+                viewModel.movie.observe(this, {
+                    when (it.status) {
+                        Status.LOADING -> activityDetailsBinding.progressBar.visibility =
+                            View.VISIBLE
+                        Status.SUCCESS -> if (it.data != null) {
+                            activityDetailsBinding.progressBar.visibility = View.GONE
+                            populateDetail(it.data)
+                        }
+                        Status.ERROR -> {
+                            activityDetailsBinding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                applicationContext,
+                                "Something Went Wrong",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                })
             }
 
-            tvID?.let {
-                populateTvDetail(tvID)
+            if (tvID != null) {
+                viewModel.setSelectedTvShow(tvID)
+                viewModel.tvShow.observe(this, {
+                    when (it.status) {
+                        Status.LOADING -> activityDetailsBinding.progressBar.visibility =
+                            View.VISIBLE
+                        Status.SUCCESS -> if (it.data != null) {
+                            activityDetailsBinding.progressBar.visibility = View.GONE
+                            populateDetail(it.data)
+                        }
+                        Status.ERROR -> {
+                            activityDetailsBinding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                applicationContext,
+                                "Something Went Wrong",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                })
             }
+
+        }
+
+//
+//            mvID?.let{
+//                populateMovieDetail(mvID)
+//            }
+//
+//            tvID?.let {
+//                populateTvDetail(tvID)
+//            }
 
     }
 
-    private fun populateMovieDetail(mvId: String){
-        progress_bar.visibility = View.VISIBLE
-        viewModel.setMovieID(mvId)
-        viewModel.getDetailMovie().observe(this,{
-            progress_bar.visibility = View.GONE
-            tv_judul.text = it.title
-            tv_synopsis.text = it.synopsis
-            Glide.with(iv_poster)
-                    .load(it.poster)
-                    .into(iv_poster)
-        })
-    }
+    private fun populateDetail(netflex: NetflexData) {
+        var status = netflex.isFavorite
+        activityDetailsBinding.tvJudul.text = netflex.title
+        activityDetailsBinding.tvSynopsis.text = netflex.synopsis
+        Glide.with(this)
+            .load(netflex.poster)
+            .into(activityDetailsBinding.ivPoster)
 
-    private fun populateTvDetail(tvId: String){
-        progress_bar.visibility = View.VISIBLE
-        viewModel.setShowID(tvId)
-        viewModel.getDetailShow().observe(this, {
-            progress_bar.visibility = View.GONE
-            tv_judul.text = it.title
-            tv_synopsis.text = it.synopsis
-            Glide.with(iv_poster)
-                    .load(it.poster)
-                    .into(iv_poster)
-        })
+        fun setFavorite(status: Boolean) {
+            if (status) {
+                activityDetailsBinding.fabFav.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.ic_fav_fill)
+                )
+            } else {
+                activityDetailsBinding.fabFav.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.ic_fav_border)
+                )
+            }
+        }
+
+        setFavorite(status)
+        activityDetailsBinding.fabFav.setOnClickListener {
+            status = !status
+            setFavorite(status)
+            viewModel.setFavorite()
+        }
+
+//        progress_bar.visibility = View.VISIBLE
+//        viewModel.setSelectedMovie(mvId)
+//        viewModel.movie.observe(this,{
+//            when(it.status){
+//                Status.LOADING -> binding.progressBar.visibility = View.VISIBLE
+//                Status.SUCCESS -> if(it.data != null){
+//                    progress_bar.visibility = View.GONE
+//
+//                }
+//            }
+//        })
     }
 }

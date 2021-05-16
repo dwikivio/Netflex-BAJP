@@ -1,48 +1,92 @@
 package com.stikubank.mynetflex.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.stikubank.mynetflex.R
 import com.stikubank.mynetflex.adapter.MovieAdapter
 import com.stikubank.mynetflex.databinding.FragmentMoviesBinding
 import com.stikubank.mynetflex.viewmodel.MoviesViewModel
 import com.stikubank.mynetflex.viewmodel.ViewModelFactory
+import com.stikubank.mynetflex.vo.Status
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
 
-    private lateinit var fragmentMoviesBinding: FragmentMoviesBinding
+    private var fragmentMoviesBinding: FragmentMoviesBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentMoviesBinding = FragmentMoviesBinding.inflate(inflater, container, false)
-        return fragmentMoviesBinding.root
+        setHasOptionsMenu(true)
+        return fragmentMoviesBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if(activity != null){
 
-            val factory = ViewModelFactory.getInstance(requireActivity())
-            val vModel = ViewModelProvider(this, factory)[MoviesViewModel::class.java]
-
+//            val factory = ViewModelFactory.getInstance(requireActivity())
+//            val vModel = ViewModelProvider(this, factory)[MoviesViewModel::class.java]
+            val vModel: MoviesViewModel by viewModel()
             val movieAdapter = MovieAdapter()
 
-            fragmentMoviesBinding.progressBar.visibility = View.VISIBLE
             vModel.getMovies().observe(this, { movies ->
-                fragmentMoviesBinding.progressBar.visibility = View.GONE
-                movieAdapter.setMovies(movies)
-                movieAdapter.notifyDataSetChanged()
+                if(movies != null ){
+                    when(movies.status){
+                        Status.LOADING -> fragmentMoviesBinding?.progressBar?.visibility = View.VISIBLE
+                        Status.SUCCESS -> {
+                            fragmentMoviesBinding?.progressBar?.visibility = View.GONE
+//                            movieAdapter.setMovies(movies.data)
+                            movieAdapter.submitList(movies.data)
+                            movieAdapter.notifyDataSetChanged()
+                        }
+                        Status.ERROR -> {
+                            fragmentMoviesBinding?.progressBar?.visibility = View.GONE
+                            Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             })
 
-            with(fragmentMoviesBinding.rvMovies){
-                layoutManager = LinearLayoutManager(context)
-                setHasFixedSize(true)
-                adapter = movieAdapter
+            with(fragmentMoviesBinding?.rvMovies){
+                this?.layoutManager = LinearLayoutManager(context)
+                this?.setHasFixedSize(true)
+                this?.adapter = movieAdapter
             }
+
+//            fragmentMoviesBinding.progressBar.visibility = View.VISIBLE
+//            vModel.getMovies().observe(this, { movies ->
+//                fragmentMoviesBinding.progressBar.visibility = View.GONE
+//                movieAdapter.setMovies(movies)
+//                movieAdapter.notifyDataSetChanged()
+//            })
+//
+//            with(fragmentMoviesBinding.rvMovies){
+//                layoutManager = LinearLayoutManager(context)
+//                setHasFixedSize(true)
+//                adapter = movieAdapter
+//            }
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_favorite, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+                R.id.menu_favorite -> startActivity(Intent(requireContext(), FavoriteActivity::class.java))
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fragmentMoviesBinding = null
+    }
 }
